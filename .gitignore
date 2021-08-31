@@ -1,3 +1,5 @@
 .DS_Store
 .vagrant
 *.log
+keys/*.pem
+keys/*.key
