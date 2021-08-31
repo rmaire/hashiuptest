@@ -312,26 +312,13 @@ consul tls ca create -domain=nomad -name-constraint
 consul tls cert create -server -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=first.mycloud.local -additional-ipaddress=10.3.5.20 -additional-dnsname=second.mycloud.local -additional-ipaddress=10.3.5.30 -additional-dnsname=third.mycloud.local -additional-ipaddress=10.3.5.40
 consul tls cert create -client  -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=fouth.mycloud.local -additional-ipaddress=10.3.5.50 -additional-dnsname=fifth.mycloud.local -additional-ipaddress=10.3.5.60
 
-cat > consulsrv1.hcl <<CONSULSRV1
-consul {
-  address = "$SERVER_1_IP:8501"
-  auto_advertise      = true
-  server_service_name = "nomad"
-  ca_file = "/etc/consul.d/consul-agent-ca.pem"
-  client_auto_join = true
-  server_auto_join = true
-  ssl = true
-  verify_ssl = false
-}
-CONSULSRV1
-
 hashi-up consul install \
   --ssh-target-addr $SERVER_1_IP \
   --ssh-target-user vagrant \
   --ssh-target-key ~/.ssh/insecure_private_key \
   --server \
   --connect \
-  --file consulsrv1.hcl \
+  --file "consulsrv1.hcl" \
   --encrypt $CONSUL_KEY \
   --ca-file consul-agent-ca.pem \
   --cert-file dc1-server-consul-0.pem \
@@ -400,6 +387,19 @@ hashi-up consul install \
   --advertise-addr $AGENT_2_IP \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
 
+sudo bash -c "cat > /etc/nomad.d/config/nomadsrv1.hcl" <<'NOMADSRV1'
+consul {
+  address = "$SERVER_1_IP:8501"
+  auto_advertise      = true
+  server_service_name = "nomad"
+  ca_file = "/etc/consul.d/consul-agent-ca.pem"
+  client_auto_join = true
+  server_auto_join = true
+  ssl = true
+  verify_ssl = false
+}
+NOMADSRV1
+
 hashi-up nomad install \
   --ssh-target-addr $SERVER_1_IP \
   --ssh-target-user vagrant \
@@ -407,6 +407,7 @@ hashi-up nomad install \
   --server \
   --address $SERVER_1_IP \
   --advertise $SERVER_1_IP \
+  --file ./nomadsrv1.hcl \
   --encrypt $NOMAD_KEY \
   --ca-file nomad-agent-ca.pem \
   --cert-file dc1-server-nomad-0.pem \
