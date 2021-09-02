@@ -200,8 +200,23 @@ hashi-up nomad install \
 hashi-up vault install \
     --ssh-target-addr $SERVER_1_IP \
     --ssh-target-user vagrant \
+    --ssh-target-key ~/.ssh/insecure_private_key \
     --storage consul \
-    --api-addr http://$SERVER_1_IP:8200 \
+    --api-addr http://$SERVER_1_IP:8200
+
+hashi-up vault install \
+    --ssh-target-addr $SERVER_2_IP \
+    --ssh-target-user vagrant \
+    --ssh-target-key ~/.ssh/insecure_private_key \
+    --storage consul \
+    --api-addr http://$SERVER_2_IP:8200
+
+hashi-up vault install \
+    --ssh-target-addr $SERVER_3_IP \
+    --ssh-target-user vagrant \
+    --ssh-target-key ~/.ssh/insecure_private_key \
+    --storage consul \
+    --api-addr http://$SERVER_3_IP:8200
 
 hashi-up consul uninstall \
    --ssh-target-addr $AGENT_1_IP \
@@ -212,3 +227,6 @@ hashi-up consul uninstall \
   --ssh-target-addr $AGENT_2_IP \
   --ssh-target-user vagrant \
   --ssh-target-key ~/.ssh/insecure_private_key
+
+s.yjFcAP2lYhD4p2eOPVbvivmg
+7nfkjMXZWiRIWyPcdT++QJp0wX0xdkUCxpM0hVuMTOo=
