@@ -171,8 +171,19 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get -y upgrade
       curl -sLS https://get.hashi-up.dev | sh
-      cp /vagrant/keys/insecure_private_key ~/.ssh/
-      chmod 700 ~/.ssh/insecure_private_key
+      cp /vagrant/keys/insecure_private_key /home/vagrant/.ssh/
+      chmod 700 /home/vagrant/.ssh/insecure_private_key
+
+      hashi-up consul install \
+        --local \
+        --skip-enable \
+        --skip-start \
+        --client-addr 0.0.0.0
+
+      hashi-up nomad install \
+        --local \
+        --skip-enable \
+        --skip-start
     EOF
   end
 end
