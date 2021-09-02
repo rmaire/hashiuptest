@@ -1,3 +1,7 @@
+
+
+
+
 hashi-up consul install \
     --local \
     --skip-enable \
@@ -290,8 +294,10 @@ hashi-up nomad install \
 
 export NOMAD_KEY=$(nomad operator keygen)
 echo $NOMAD_KEY > nomad-gossip.key
+export NOMAD_KEY=$(cat nomad-gossip.key)
 export CONSUL_KEY=$(consul keygen)
 echo $CONSUL_KEY > consul-gossip.key
+export CONSUL_KEY=$(cat consul-gossip.key)
 
 export TOOL_IP=10.3.5.80
 export SERVER_1_IP=10.3.5.20
@@ -304,10 +310,7 @@ consul tls ca create
 consul tls cert create -server -dc dc1 -additional-dnsname=first.mycloud.local -additional-ipaddress=10.3.5.20 -additional-dnsname=second.mycloud.local -additional-ipaddress=10.3.5.30 -additional-dnsname=third.mycloud.local -additional-ipaddress=10.3.5.40
 consul tls cert create -client -dc dc1 -additional-dnsname=fouth.mycloud.local -additional-ipaddress=10.3.5.50 -additional-dnsname=fifth.mycloud.local -additional-ipaddress=10.3.5.60
 
-consul tls ca create -domain=nomad -name-constraint
-
-# cd /vagrant/keys ; consul tls cert create -server -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=first.mycloud.local -additional-ipaddress=10.3.5.20 -additional-dnsname=second.mycloud.local -additional-ipaddress=10.3.5.30 -additional-dnsname=third.mycloud.local -additional-ipaddress=10.3.5.40
-# cd /vagrant/keys ; consul tls cert create -client  -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=fouth.mycloud.local -additional-ipaddress=10.3.5.50 -additional-dnsname=fifth.mycloud.local -additional-ipaddress=10.3.5.60
+consul tls ca create -domain=nomad
 
 consul tls cert create -server -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=first.mycloud.local -additional-ipaddress=10.3.5.20 -additional-dnsname=second.mycloud.local -additional-ipaddress=10.3.5.30 -additional-dnsname=third.mycloud.local -additional-ipaddress=10.3.5.40
 consul tls cert create -client  -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=fouth.mycloud.local -additional-ipaddress=10.3.5.50 -additional-dnsname=fifth.mycloud.local -additional-ipaddress=10.3.5.60
@@ -318,7 +321,6 @@ hashi-up consul install \
   --ssh-target-key ~/.ssh/insecure_private_key \
   --server \
   --connect \
-  --file "consulsrv1.hcl" \
   --encrypt $CONSUL_KEY \
   --ca-file consul-agent-ca.pem \
   --cert-file dc1-server-consul-0.pem \
@@ -326,6 +328,9 @@ hashi-up consul install \
   --client-addr $SERVER_1_IP \
   --bind-addr 0.0.0.0 \
   --advertise-addr $SERVER_1_IP \
+  --https-addr $SERVER_1_IP \
+  --http-addr 127.0.0.1 \
+  --https-only false \
   --bootstrap-expect 3 \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
 
@@ -387,7 +392,47 @@ hashi-up consul install \
   --advertise-addr $AGENT_2_IP \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
 
-sudo bash -c "cat > /etc/nomad.d/config/nomadsrv1.hcl" <<'NOMADSRV1'
+cat > config/nomadsrv1.hcl <<NOMADSRV1
+consul {
+  address = "$SERVER_1_IP:8501"
+  auto_advertise      = true
+  server_service_name = "nomad"
+  ca_file = "/etc/consul.d/consul-agent-ca.pem"
+  client_auto_join = true
+  server_auto_join = true
+  ssl = true
+  verify_ssl = false
+}
+NOMADSRV1
+
+cat > nomadsrv1.hcl <<NOMADSRV1
+datacenter = "dc1"
+data_dir   = "/opt/nomad"
+addresses {
+  http = "$SERVER_1_IP"
+  rpc  = "$SERVER_1_IP"
+  serf = "$SERVER_1_IP"
+}
+advertise {
+  http = "$SERVER_1_IP"
+  rpc  = "$SERVER_1_IP"
+  serf = "$SERVER_1_IP"
+}
+server {
+  enabled          = true
+  bootstrap_expect = 3
+  server_join {
+    retry_join = ["$SERVER_1_IP", "$SERVER_2_IP", "$SERVER_3_IP"]
+  }
+  encrypt = "$NOMAD_KEY"
+}
+tls {
+  http      = true
+  rpc       = true
+  ca_file   = "/etc/nomad.d/nomad-agent-ca.pem"
+  cert_file = "/etc/nomad.d/dc1-server-nomad-0.pem"
+  key_file  = "/etc/nomad.d/dc1-server-nomad-0-key.pem"
+}
 consul {
   address = "$SERVER_1_IP:8501"
   auto_advertise      = true
@@ -407,7 +452,19 @@ hashi-up nomad install \
   --server \
   --address $SERVER_1_IP \
   --advertise $SERVER_1_IP \
-  --file ./nomadsrv1.hcl \
+  --config-file ./nomadsrv1.hcl \
+  --file ./consul-agent-ca.pem \
+  --file ./nomad-agent-ca.pem \
+  --file ./dc1-server-nomad-0.pem \
+  --file ./dc1-server-nomad-0-key.pem
+
+hashi-up nomad install \
+  --ssh-target-addr $SERVER_1_IP \
+  --ssh-target-user vagrant \
+  --ssh-target-key ~/.ssh/insecure_private_key \
+  --server \
+  --address $SERVER_1_IP \
+  --advertise $SERVER_1_IP \
   --encrypt $NOMAD_KEY \
   --ca-file nomad-agent-ca.pem \
   --cert-file dc1-server-nomad-0.pem \
@@ -460,10 +517,15 @@ hashi-up nomad install \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
 
 
-hashi-up nomad restart \
+hashi-up nomad uninstall \
   --ssh-target-addr $SERVER_1_IP \
   --ssh-target-user vagrant \
-  --ssh-target-key insecure_private_key
+  --ssh-target-key ~/.ssh/insecure_private_key
+
+hashi-up consul uninstall \
+  --ssh-target-addr $SERVER_1_IP \
+  --ssh-target-user vagrant \
+  --ssh-target-key ~/.ssh/insecure_private_key
 
 
 # sudo CONSUL_CACERT=/etc/consul.d/consul-agent-ca.pem CONSUL_HTTP_SSL=true CONSUL_HTTP_ADDR=10.3.5.20:8501 consul
