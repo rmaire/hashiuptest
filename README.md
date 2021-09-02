@@ -1,283 +1,3 @@
-
-
-
-
-hashi-up consul install \
-    --local \
-    --skip-enable \
-    --skip-start \
-    --client-addr 0.0.0.0
-
- export CONSUL_KEY=$(consul keygen)
-
-hashi-up consul install \
-    --ssh-target-addr first.mycloud.local \
-    --ssh-target-user vagrant \
-    --ssh-target-key ~/.ssh/insecure_private_key \
-    --server \
-    --client-addr 0.0.0.0 \
-    --bind-addr 10.3.5.20 \
-    --advertise-addr 10.3.5.20
-
-hashi-up nomad install \
-    --ssh-target-addr first.mycloud.local \
-    --ssh-target-user vagrant \
-    --ssh-target-key ~/.ssh/insecure_private_key \
-    --server
-
-hashi-up vault install \
-    --ssh-target-addr first.mycloud.local \
-    --ssh-target-user vagrant \
-    --ssh-target-key ~/.ssh/insecure_private_key \
-    --consul-addr 10.3.5.20:8500 \
-    --storage consul
-
----------------
-hashi-up consul install \
-    --local \
-    --skip-enable \
-    --skip-start \
-    --client-addr 0.0.0.0
-
-
-
-cd /vagrant/keys ; consul tls cert create -server -dc dc1
-cd /vagrant/keys ; consul tls cert create -client -dc dc1
-
-export TOOL_IP=10.3.5.80
-export SERVER_1_IP=10.3.5.20
-export SERVER_2_IP=10.3.5.30
-export SERVER_3_IP=10.3.5.40
-export AGENT_1_IP=10.3.5.50
-export AGENT_2_IP=10.3.5.60
-export CONSUL_KEY=$(consul keygen)
-
-export CONSUL_KEY=$(ssh -o StrictHostKeyChecking=no -i ~/.ssh/insecure_private_key vagrant@first.mycloud.local 'consul keygen')
-
-cp /vagrant/keys/insecure_private_key ~/.ssh/
-chmod 700 ~/.ssh/insecure_private_key
-
-hashi-up consul install \
-    --local \
-    --skip-enable \
-    --skip-start \
-    --client-addr 0.0.0.0
-
-hashi-up tls cert create --host 10.3.5.20 --host 10.3.5.30 --host 10.3.5.40 --host 10.3.5.50 --host 10.3.5.60 --host 10.3.5.70 --host first.mycloud.local --host second.mycloud.local --host third.mycloud.local --host fourth.mycloud.local --host fifth.mycloud.local --host sixth.mycloud.local 
-
-hashi-up tls cert create --host 10.3.5.20 --host 10.3.5.30 --host 10.3.5.40--host first.mycloud.local --host second.mycloud.local --host third.mycloud.local
-
-
-hashi-up consul install \
-  --ssh-target-addr $SERVER_1_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --server \
-  --connect \
-  --client-addr 0.0.0.0 \
-  --bind-addr $SERVER_1_IP \
-  --advertise-addr $SERVER_1_IP \
-  --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-
-export CONSUL_KEY=$(ssh -o StrictHostKeyChecking=no -i ~/.ssh/insecure_private_key vagrant@first.mycloud.local 'consul keygen')
-
-ssh -o StrictHostKeyChecking=no -i ~/.ssh/insecure_private_key vagrant@first.mycloud.local 'cd /vagrant/keys ; consul tls ca create'
-
-ssh -o StrictHostKeyChecking=no -i ~/.ssh/insecure_private_key vagrant@first.mycloud.local 'cd /vagrant/keys ; consul tls cert create -server -dc dc1 -additional-dnsname=first.mycloud.local -additional-ipaddress=10.3.5.20 -additional-dnsname=second.mycloud.local -additional-ipaddress=10.3.5.30 -additional-dnsname=third.mycloud.local -additional-ipaddress=10.3.5.40'
-ssh -o StrictHostKeyChecking=no -i ~/.ssh/insecure_private_key vagrant@first.mycloud.local 'cd /vagrant/keys ; consul tls cert create -client -dc dc1'
-
->>>>>>>>>>>>>>>>
-ssh -o StrictHostKeyChecking=no -i ~/.ssh/insecure_private_key vagrant@first.mycloud.local 'cd /vagrant/keys ; consul tls cert create -server -dc dc1'
-ssh -o StrictHostKeyChecking=no -i ~/.ssh/insecure_private_key vagrant@first.mycloud.local 'cd /vagrant/keys ; consul tls cert create -client -dc dc1'
-
-hashi-up tls cert create --host 10.3.5.20 --host 10.3.5.30 --host 10.3.5.40 --host 10.3.5.50 --host 10.3.5.60 --host 10.3.5.70 --host first.mycloud.local --host second.mycloud.local --host third.mycloud.local --host fourth.mycloud.local --host fifth.mycloud.local --host sixth.mycloud.local 
->>>>>>>>>>>>>>>>
-
-  hashi-up consul install \
-  --ssh-target-addr $SERVER_1_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --server \
-  --connect \
-  --encrypt $CONSUL_KEY \
-  --ca-file consul-agent-ca.pem \
-  --cert-file dc1-server-consul-0.pem \
-  --key-file dc1-server-consul-0-key.pem \
-  --client-addr $SERVER_1_IP \
-  --bind-addr $SERVER_1_IP \
-  --advertise-addr $SERVER_1_IP \
-  --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-
-hashi-up consul install \
-  --ssh-target-addr $SERVER_2_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --server \
-  --connect \
-  --encrypt $CONSUL_KEY \
-  --ca-file consul-agent-ca.pem \
-  --cert-file dc1-server-consul-0.pem \
-  --key-file dc1-server-consul-0-key.pem \
-  --client-addr 0.0.0.0 \
-  --bind-addr $SERVER_2_IP \
-  --advertise-addr $SERVER_2_IP \
-  --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-  
-hashi-up consul install \
-  --ssh-target-addr $SERVER_3_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --server \
-  --connect \
-  --encrypt $CONSUL_KEY \
-  --ca-file consul-agent-ca.pem \
-  --cert-file dc1-server-consul-0.pem \
-  --key-file dc1-server-consul-0-key.pem \
-  --client-addr 0.0.0.0 \
-  --bind-addr $SERVER_3_IP \
-  --advertise-addr $SERVER_3_IP \
-  --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-
-hashi-up consul install \
-  --ssh-target-addr $AGENT_1_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --connect \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-
-hashi-up consul install \
-  --ssh-target-addr $AGENT_1_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --connect \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-
-
-hashi-up nomad install \
-  --ssh-target-addr $SERVER_1_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --server \
-  --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-  
-hashi-up nomad install \
-  --ssh-target-addr $SERVER_2_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --server \
-  --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-  
-hashi-up nomad install \
-  --ssh-target-addr $SERVER_3_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --server \
-  --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-
-hashi-up nomad install \
-  --ssh-target-addr $AGENT_1_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --client \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-  
-hashi-up nomad install \
-  --ssh-target-addr $AGENT_2_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --client \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-
-
-hashi-up vault install \
-    --ssh-target-addr $SERVER_1_IP \
-    --ssh-target-user vagrant \
-    --ssh-target-key ~/.ssh/insecure_private_key \
-    --storage consul \
-    --api-addr http://$SERVER_1_IP:8200
-
-hashi-up vault install \
-    --ssh-target-addr $SERVER_2_IP \
-    --ssh-target-user vagrant \
-    --ssh-target-key ~/.ssh/insecure_private_key \
-    --storage consul \
-    --api-addr http://$SERVER_2_IP:8200
-
-hashi-up vault install \
-    --ssh-target-addr $SERVER_3_IP \
-    --ssh-target-user vagrant \
-    --ssh-target-key ~/.ssh/insecure_private_key \
-    --storage consul \
-    --api-addr http://$SERVER_3_IP:8200
-
-
-
-  hashi-up consul install \
-  --ssh-target-addr $SERVER_1_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --server \
-  --connect \
-  --encrypt $CONSUL_KEY \
-  --ca-file consul-agent-ca.pem \
-  --cert-file dc1-server-consul-0.pem \
-  --key-file dc1-server-consul-0-key.pem \
-  --client-addr $SERVER_1_IP \
-  --bind-addr $SERVER_1_IP \
-  --advertise-addr $SERVER_1_IP \
-  --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-
-  hashi-up consul install \
-  --ssh-target-addr $SERVER_1_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --server \
-  --connect \
-  --encrypt $CONSUL_KEY \
-  --ca-file consul-agent-ca.pem \
-  --cert-file dc1-server-consul-0.pem \
-  --key-file dc1-server-consul-0-key.pem \
-  --client-addr 0.0.0.0 \
-  --bind-addr $SERVER_1_IP \
-  --advertise-addr $SERVER_1_IP \
-  --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-
-  hashi-up consul install \
-  --ssh-target-addr $SERVER_2_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --server \
-  --connect \
-  --encrypt $CONSUL_KEY \
-  --client-addr 0.0.0.0 \
-  --bind-addr $SERVER_2_IP \
-  --advertise-addr $SERVER_2_IP \
-  --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-  
-hashi-up consul install \
-  --ssh-target-addr $SERVER_3_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --server \
-  --connect \
-  --encrypt $CONSUL_KEY \
-  --client-addr 0.0.0.0 \
-  --bind-addr $SERVER_3_IP \
-  --advertise-addr $SERVER_3_IP \
-  --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-
-  ------------------------------------------
 cp /vagrant/keys/insecure_private_key ~/.ssh/
 chmod 700 ~/.ssh/insecure_private_key
 
@@ -294,10 +14,10 @@ hashi-up nomad install \
 
 export NOMAD_KEY=$(nomad operator keygen)
 echo $NOMAD_KEY > nomad-gossip.key
-export NOMAD_KEY=$(cat nomad-gossip.key)
 export CONSUL_KEY=$(consul keygen)
 echo $CONSUL_KEY > consul-gossip.key
 export CONSUL_KEY=$(cat consul-gossip.key)
+export NOMAD_KEY=$(cat nomad-gossip.key)
 
 export TOOL_IP=10.3.5.80
 export SERVER_1_IP=10.3.5.20
@@ -330,9 +50,10 @@ hashi-up consul install \
   --advertise-addr $SERVER_1_IP \
   --https-addr $SERVER_1_IP \
   --http-addr 127.0.0.1 \
-  --https-only false \
+  --https-only=false \
   --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
+  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
+  -- version 1.10.2
 
 hashi-up consul install \
   --ssh-target-addr $SERVER_2_IP \
@@ -347,8 +68,12 @@ hashi-up consul install \
   --client-addr $SERVER_2_IP \
   --bind-addr 0.0.0.0 \
   --advertise-addr $SERVER_2_IP \
+  --https-addr $SERVER_2_IP \
+  --http-addr 127.0.0.1 \
+  --https-only=false \
   --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
+  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
+  -- version 1.10.2
   
 hashi-up consul install \
   --ssh-target-addr $SERVER_3_IP \
@@ -363,8 +88,12 @@ hashi-up consul install \
   --client-addr $SERVER_3_IP \
   --bind-addr 0.0.0.0 \
   --advertise-addr $SERVER_3_IP \
+  --https-addr $SERVER_3_IP \
+  --http-addr 127.0.0.1 \
+  --https-only=false \
   --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
+  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
+  -- version 1.10.2
 
 hashi-up consul install \
   --ssh-target-addr $AGENT_1_IP \
@@ -377,7 +106,11 @@ hashi-up consul install \
   --key-file dc1-client-consul-0-key.pem \
   --bind-addr 0.0.0.0 \
   --advertise-addr $AGENT_1_IP \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
+  --https-addr $AGENT_1_IP \
+  --http-addr 127.0.0.1 \
+  --https-only=false \
+  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
+  -- version 1.10.2
 
 hashi-up consul install \
   --ssh-target-addr $AGENT_2_IP \
@@ -390,73 +123,11 @@ hashi-up consul install \
   --key-file dc1-client-consul-0-key.pem \
   --bind-addr 0.0.0.0 \
   --advertise-addr $AGENT_2_IP \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
-
-cat > config/nomadsrv1.hcl <<NOMADSRV1
-consul {
-  address = "$SERVER_1_IP:8501"
-  auto_advertise      = true
-  server_service_name = "nomad"
-  ca_file = "/etc/consul.d/consul-agent-ca.pem"
-  client_auto_join = true
-  server_auto_join = true
-  ssl = true
-  verify_ssl = false
-}
-NOMADSRV1
-
-cat > nomadsrv1.hcl <<NOMADSRV1
-datacenter = "dc1"
-data_dir   = "/opt/nomad"
-addresses {
-  http = "$SERVER_1_IP"
-  rpc  = "$SERVER_1_IP"
-  serf = "$SERVER_1_IP"
-}
-advertise {
-  http = "$SERVER_1_IP"
-  rpc  = "$SERVER_1_IP"
-  serf = "$SERVER_1_IP"
-}
-server {
-  enabled          = true
-  bootstrap_expect = 3
-  server_join {
-    retry_join = ["$SERVER_1_IP", "$SERVER_2_IP", "$SERVER_3_IP"]
-  }
-  encrypt = "$NOMAD_KEY"
-}
-tls {
-  http      = true
-  rpc       = true
-  ca_file   = "/etc/nomad.d/nomad-agent-ca.pem"
-  cert_file = "/etc/nomad.d/dc1-server-nomad-0.pem"
-  key_file  = "/etc/nomad.d/dc1-server-nomad-0-key.pem"
-}
-consul {
-  address = "$SERVER_1_IP:8501"
-  auto_advertise      = true
-  server_service_name = "nomad"
-  ca_file = "/etc/consul.d/consul-agent-ca.pem"
-  client_auto_join = true
-  server_auto_join = true
-  ssl = true
-  verify_ssl = false
-}
-NOMADSRV1
-
-hashi-up nomad install \
-  --ssh-target-addr $SERVER_1_IP \
-  --ssh-target-user vagrant \
-  --ssh-target-key ~/.ssh/insecure_private_key \
-  --server \
-  --address $SERVER_1_IP \
-  --advertise $SERVER_1_IP \
-  --config-file ./nomadsrv1.hcl \
-  --file ./consul-agent-ca.pem \
-  --file ./nomad-agent-ca.pem \
-  --file ./dc1-server-nomad-0.pem \
-  --file ./dc1-server-nomad-0-key.pem
+  --https-addr $AGENT_2_IP \
+  --http-addr 127.0.0.1 \
+  --https-only=false \
+  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
+  -- version 1.10.2
 
 hashi-up nomad install \
   --ssh-target-addr $SERVER_1_IP \
@@ -470,7 +141,8 @@ hashi-up nomad install \
   --cert-file dc1-server-nomad-0.pem \
   --key-file dc1-server-nomad-0-key.pem \
   --bootstrap-expect 3 \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
+  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
+  -- version 1.1.4
   
 hashi-up nomad install \
   --ssh-target-addr $SERVER_2_IP \
@@ -484,7 +156,8 @@ hashi-up nomad install \
   --ca-file nomad-agent-ca.pem \
   --cert-file dc1-server-nomad-0.pem \
   --key-file dc1-server-nomad-0-key.pem \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
+  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
+  -- version 1.1.4
   
 hashi-up nomad install \
   --ssh-target-addr $SERVER_3_IP \
@@ -498,7 +171,8 @@ hashi-up nomad install \
   --ca-file nomad-agent-ca.pem \
   --cert-file dc1-server-nomad-0.pem \
   --key-file dc1-server-nomad-0-key.pem \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
+  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
+  -- version 1.1.4
 
 hashi-up nomad install \
   --ssh-target-addr $AGENT_1_IP \
@@ -506,7 +180,11 @@ hashi-up nomad install \
   --ssh-target-key ~/.ssh/insecure_private_key \
   --client \
   --encrypt $NOMAD_KEY \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
+  --ca-file nomad-agent-ca.pem \
+  --cert-file dc1-server-nomad-0.pem \
+  --key-file dc1-server-nomad-0-key.pem \
+  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
+  -- version 1.1.4
   
 hashi-up nomad install \
   --ssh-target-addr $AGENT_2_IP \
@@ -514,20 +192,24 @@ hashi-up nomad install \
   --ssh-target-key ~/.ssh/insecure_private_key \
   --client \
   --encrypt $NOMAD_KEY \
-  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP
+  --ca-file nomad-agent-ca.pem \
+  --cert-file dc1-server-nomad-0.pem \
+  --key-file dc1-server-nomad-0-key.pem \
+  --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
+  -- version 1.1.4
 
+hashi-up vault install \
+    --ssh-target-addr $SERVER_1_IP \
+    --ssh-target-user vagrant \
+    --storage consul \
+    --api-addr http://$SERVER_1_IP:8200 \
 
-hashi-up nomad uninstall \
-  --ssh-target-addr $SERVER_1_IP \
+hashi-up consul uninstall \
+   --ssh-target-addr $AGENT_1_IP \
   --ssh-target-user vagrant \
   --ssh-target-key ~/.ssh/insecure_private_key
 
 hashi-up consul uninstall \
-  --ssh-target-addr $SERVER_1_IP \
+  --ssh-target-addr $AGENT_2_IP \
   --ssh-target-user vagrant \
   --ssh-target-key ~/.ssh/insecure_private_key
-
-
-# sudo CONSUL_CACERT=/etc/consul.d/consul-agent-ca.pem CONSUL_HTTP_SSL=true CONSUL_HTTP_ADDR=10.3.5.20:8501 consul
-# sudo NOMAD_CACERT=/etc/nomad.d/nomad-agent-ca.pem NOMAD_ADDR=https://10.3.5.20:4646 nomad agent-info
-

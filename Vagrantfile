@@ -26,6 +26,7 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get -y upgrade
       apt-get -y install apt-transport-https ca-certificates curl gnupg-agent
+      curl -sLS https://get.hashi-up.dev | sh
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
       add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
@@ -54,6 +55,7 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get -y upgrade
       apt-get -y install apt-transport-https ca-certificates curl gnupg-agent
+      curl -sLS https://get.hashi-up.dev | sh
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
       add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
@@ -82,6 +84,7 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get -y upgrade
       apt-get -y install apt-transport-https ca-certificates curl gnupg-agent
+      curl -sLS https://get.hashi-up.dev | sh
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
       add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
@@ -110,6 +113,7 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get -y upgrade
       apt-get -y install apt-transport-https ca-certificates curl gnupg-agent
+      curl -sLS https://get.hashi-up.dev | sh
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
       add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
@@ -138,6 +142,7 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get -y upgrade
       apt-get -y install apt-transport-https ca-certificates curl gnupg-agent
+      curl -sLS https://get.hashi-up.dev | sh
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
       add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
@@ -166,6 +171,7 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get -y upgrade
       apt-get -y install apt-transport-https ca-certificates curl gnupg-agent
+      curl -sLS https://get.hashi-up.dev | sh
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
       add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
