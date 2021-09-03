@@ -185,5 +185,7 @@ Vagrant.configure("2") do |config|
         --skip-enable \
         --skip-start
     EOF
+
+    tools.vm.provision "shell", path: "cluster.sh"
   end
 end
