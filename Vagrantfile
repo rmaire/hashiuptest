@@ -33,12 +33,13 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get -y upgrade
       apt-get -y install apt-transport-https ca-certificates curl gnupg-agent
-      curl -sLS https://get.hashi-up.dev | sh
-      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-      add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+      mkdir -p /etc/apt/keyrings
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
       DEBIAN_FRONTEND=noninteractive apt-get -y update
-      DEBIAN_FRONTEND=noninteractive apt-get  --no-install-recommends -y install docker-ce docker-ce-cli containerd.io
+      DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
       systemctl start docker
       systemctl enable docker
