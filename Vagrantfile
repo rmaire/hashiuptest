@@ -22,6 +22,14 @@ Vagrant.configure("2") do |config|
       vb.cpus = 3
     end
 
+    first.vm.provider "vmware_desktop" do |v, override|
+      override.vm.box = "bytesguy/ubuntu-server-20.04-arm64"
+      override.vm.network "private_network", ip: "192.168.15.20"
+      v.gui = true
+      v.memory = "2048"
+      v.linked_clone = false
+    end
+
     first.vm.provision "shell", inline: <<-EOF
       apt-get update
       apt-get -y upgrade
@@ -49,6 +57,14 @@ Vagrant.configure("2") do |config|
       vb.name = "second"
       vb.memory = 2048
       vb.cpus = 3
+    end
+
+    second.vm.provider "vmware_desktop" do |v, override|
+      override.vm.box = "bytesguy/ubuntu-server-20.04-arm64"
+      override.vm.network "private_network", ip: "192.168.15.30"
+      v.gui = true
+      v.memory = "2048"
+      v.linked_clone = false
     end
 
     second.vm.provision "shell", inline: <<-EOF
@@ -80,6 +96,14 @@ Vagrant.configure("2") do |config|
       vb.cpus = 3
     end
 
+    third.vm.provider "vmware_desktop" do |v, override|
+      override.vm.box = "bytesguy/ubuntu-server-20.04-arm64"
+      override.vm.network "private_network", ip: "192.168.15.40"
+      v.gui = true
+      v.memory = "2048"
+      v.linked_clone = false
+    end
+
     third.vm.provision "shell", inline: <<-EOF
       apt-get update
       apt-get -y upgrade
@@ -107,6 +131,14 @@ Vagrant.configure("2") do |config|
       vb.name = "fourth"
       vb.memory = 2048
       vb.cpus = 3
+    end
+
+    fourth.vm.provider "vmware_desktop" do |v, override|
+      override.vm.box = "bytesguy/ubuntu-server-20.04-arm64"
+      override.vm.network "private_network", ip: "192.168.15.50"
+      v.gui = true
+      v.memory = "2048"
+      v.linked_clone = false
     end
 
     fourth.vm.provision "shell", inline: <<-EOF
@@ -138,6 +170,14 @@ Vagrant.configure("2") do |config|
       vb.cpus = 3
     end
 
+    fifth.vm.provider "vmware_desktop" do |v, override|
+      override.vm.box = "bytesguy/ubuntu-server-20.04-arm64"
+      override.vm.network "private_network", ip: "192.168.15.60"
+      v.gui = true
+      v.memory = "2048"
+      v.linked_clone = false
+    end
+
     fifth.vm.provision "shell", inline: <<-EOF
       apt-get update
       apt-get -y upgrade
@@ -157,7 +197,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "tools" do |tools|
-    tools.vm.box = "ubuntu/bionic64"
+    tools.vm.box = "ilker/ubuntu2004"
     tools.vm.network "private_network", ip: "10.3.5.80"
     tools.vm.hostname = "tools.mycloud.local"
 
@@ -165,6 +205,15 @@ Vagrant.configure("2") do |config|
       vb.name = "tools"
       vb.memory = 1024
       vb.cpus = 1
+      vb.gui = true
+    end
+
+    tools.vm.provider "vmware_desktop" do |v, override|
+      override.vm.box = "bytesguy/ubuntu-server-20.04-arm64"
+      override.vm.network "private_network", ip: "192.168.15.80"
+      v.gui = true
+      v.memory = "1024"
+      v.linked_clone = false
     end
 
     tools.vm.provision "shell", inline: <<-EOF
