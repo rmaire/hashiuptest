@@ -221,8 +221,9 @@ Vagrant.configure("2") do |config|
       curl -sLS https://get.hashi-up.dev | sh
       cp /vagrant/keys/insecure_private_key /home/vagrant/.ssh/
       chmod 700 /home/vagrant/.ssh/insecure_private_key
+      chown vagrant:vagrant /home/vagrant/.ssh/insecure_private_key
     EOF
 
-    #tools.vm.provision "shell", path: "cluster.sh"
+    tools.vm.provision "shell", path: "cluster.sh"
   end
 end
