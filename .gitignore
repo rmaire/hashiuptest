@@ -3,3 +3,5 @@
 *.log
 keys/*.pem
 keys/*.key
+*.pem
+*.key

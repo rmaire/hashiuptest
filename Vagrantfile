@@ -221,17 +221,6 @@ Vagrant.configure("2") do |config|
       curl -sLS https://get.hashi-up.dev | sh
       cp /vagrant/keys/insecure_private_key /home/vagrant/.ssh/
       chmod 700 /home/vagrant/.ssh/insecure_private_key
-
-      hashi-up consul install \
-        --local \
-        --skip-enable \
-        --skip-start \
-        --client-addr 0.0.0.0
-
-      hashi-up nomad install \
-        --local \
-        --skip-enable \
-        --skip-start
     EOF
 
     #tools.vm.provision "shell", path: "cluster.sh"
