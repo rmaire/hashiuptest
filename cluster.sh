@@ -25,23 +25,27 @@ echo $CONSUL_KEY > consul-gossip.key
 export CONSUL_KEY=$(cat consul-gossip.key)
 export NOMAD_KEY=$(cat nomad-gossip.key)
 
-export TOOL_IP=10.3.5.80
-export SERVER_1_IP=10.3.5.20
-export SERVER_2_IP=10.3.5.30
-export SERVER_3_IP=10.3.5.40
-export AGENT_1_IP=10.3.5.50
-export AGENT_2_IP=10.3.5.60
+export TOOL_IP=192.168.15.80
+export SERVER_1_IP=192.168.15.20
+export SERVER_2_IP=192.168.15.30
+export SERVER_3_IP=192.168.15.40
+export AGENT_1_IP=192.168.15.50
+export AGENT_2_IP=192.168.15.60
+
+export CONSUL_VERSION=1.14.2
+export NOMAD_VERSION=1.4.3
+export VAULT_VERSION=1.12.2
 
 consul tls ca create
-consul tls cert create -server -dc dc1 -additional-dnsname=first.mycloud.local -additional-ipaddress=10.3.5.20 -additional-dnsname=second.mycloud.local -additional-ipaddress=10.3.5.30 -additional-dnsname=third.mycloud.local -additional-ipaddress=10.3.5.40
-consul tls cert create -client -dc dc1 -additional-dnsname=fouth.mycloud.local -additional-ipaddress=10.3.5.50 -additional-dnsname=fifth.mycloud.local -additional-ipaddress=10.3.5.60
+consul tls cert create -server -dc dc1 -additional-dnsname=first.mycloud.local -additional-ipaddress=${SERVER_1_IP} -additional-dnsname=second.mycloud.local -additional-ipaddress=${SERVER_2_IP} -additional-dnsname=third.mycloud.local -additional-ipaddress=${SERVER_3_IP}
+consul tls cert create -client -dc dc1 -additional-dnsname=fouth.mycloud.local -additional-ipaddress=${SERVER_4_IP} -additional-dnsname=fifth.mycloud.local -additional-ipaddress=${SERVER_5_IP}
 
 consul tls ca create -domain=nomad
-consul tls cert create -server -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=first.mycloud.local -additional-ipaddress=10.3.5.20 -additional-dnsname=second.mycloud.local -additional-ipaddress=10.3.5.30 -additional-dnsname=third.mycloud.local -additional-ipaddress=10.3.5.40
-consul tls cert create -client  -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=fouth.mycloud.local -additional-ipaddress=10.3.5.50 -additional-dnsname=fifth.mycloud.local -additional-ipaddress=10.3.5.60
+consul tls cert create -server -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=first.mycloud.local -additional-ipaddress=${SERVER_1_IP} -additional-dnsname=second.mycloud.local -additional-ipaddress=${SERVER_2_IP} -additional-dnsname=third.mycloud.local -additional-ipaddress=${SERVER_3_IP}
+consul tls cert create -client  -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=fouth.mycloud.local -additional-ipaddress=${SERVER_4_IP} -additional-dnsname=fifth.mycloud.local -additional-ipaddress=${SERVER_5_IP}
 
 consul tls ca create -domain=vault
-consul tls cert create -server -domain=vault -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=first.mycloud.local -additional-ipaddress=10.3.5.20 -additional-dnsname=second.mycloud.local -additional-ipaddress=10.3.5.30 -additional-dnsname=third.mycloud.local -additional-ipaddress=10.3.5.40
+consul tls cert create -server -domain=vault -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=first.mycloud.local -additional-ipaddress=${SERVER_1_IP} -additional-dnsname=second.mycloud.local -additional-ipaddress=${SERVER_2_IP} -additional-dnsname=third.mycloud.local -additional-ipaddress=${SERVER_3_IP}
 
 sleep 5
 
@@ -63,7 +67,7 @@ hashi-up consul install \
   --https-only=false \
   --bootstrap-expect 3 \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version 1.10.2
+  -- version ${CONSUL_VERSION}
 
 sleep 10
 
@@ -85,7 +89,7 @@ hashi-up consul install \
   --https-only=false \
   --bootstrap-expect 3 \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version 1.10.2
+  -- version ${CONSUL_VERSION}
 
 sleep 10
 
@@ -107,7 +111,7 @@ hashi-up consul install \
   --https-only=false \
   --bootstrap-expect 3 \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version 1.10.2
+  -- version ${CONSUL_VERSION}
 
 sleep 10
 
@@ -126,7 +130,7 @@ hashi-up consul install \
   --http-addr 127.0.0.1 \
   --https-only=false \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version 1.10.2
+  -- version ${CONSUL_VERSION}
 
 sleep 10
 
@@ -145,7 +149,7 @@ hashi-up consul install \
   --http-addr 127.0.0.1 \
   --https-only=false \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version 1.10.2
+  -- version ${CONSUL_VERSION}
 
 sleep 10
 
@@ -162,10 +166,10 @@ hashi-up nomad install \
   --key-file dc1-server-nomad-0-key.pem \
   --bootstrap-expect 3 \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version 1.1.4
+  -- version ${NOMAD_VERSION}
 
 sleep 10
-  
+
 hashi-up nomad install \
   --ssh-target-addr $SERVER_2_IP \
   --ssh-target-user vagrant \
@@ -179,10 +183,10 @@ hashi-up nomad install \
   --cert-file dc1-server-nomad-0.pem \
   --key-file dc1-server-nomad-0-key.pem \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version 1.1.4
+  -- version ${NOMAD_VERSION}
 
 sleep 10
-  
+
 hashi-up nomad install \
   --ssh-target-addr $SERVER_3_IP \
   --ssh-target-user vagrant \
@@ -196,7 +200,7 @@ hashi-up nomad install \
   --cert-file dc1-server-nomad-0.pem \
   --key-file dc1-server-nomad-0-key.pem \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version 1.1.4
+  -- version ${NOMAD_VERSION}
 
 sleep 10
 
@@ -210,10 +214,10 @@ hashi-up nomad install \
   --cert-file dc1-server-nomad-0.pem \
   --key-file dc1-server-nomad-0-key.pem \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version 1.1.4
+  -- version ${NOMAD_VERSION}
 
 sleep 10
-  
+
 hashi-up nomad install \
   --ssh-target-addr $AGENT_2_IP \
   --ssh-target-user vagrant \
@@ -224,7 +228,7 @@ hashi-up nomad install \
   --cert-file dc1-server-nomad-0.pem \
   --key-file dc1-server-nomad-0-key.pem \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version 1.1.4
+  -- version ${NOMAD_VERSION}
 
 sleep 10
 
@@ -236,7 +240,7 @@ hashi-up vault install \
     --key-file dc1-server-vault-0-key.pem \
     --storage consul \
     --api-addr http://$SERVER_1_IP:8200 \
-    -- version 1.8.2
+    -- version ${VAULT_VERSION}
 
 sleep 10
 
@@ -248,4 +252,4 @@ hashi-up vault install \
     --key-file dc1-server-vault-0-key.pem \
     --storage consul \
     --api-addr http://$SERVER_2_IP:8200 \
-    -- version 1.8.2
+    -- version ${VAULT_VERSION}

@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "first" do |first|
     first.vm.box = "ubuntu/bionic64"
-    first.vm.network "private_network", ip: "10.3.5.20"
+    first.vm.network "private_network", ip: "192.168.15.20"
     first.vm.hostname = "first.mycloud.local"
 
     first.vm.provider "virtualbox" do |vb|
@@ -24,7 +24,6 @@ Vagrant.configure("2") do |config|
 
     first.vm.provider "vmware_desktop" do |v, override|
       override.vm.box = "bytesguy/ubuntu-server-20.04-arm64"
-      override.vm.network "private_network", ip: "192.168.15.20"
       v.gui = true
       v.memory = "2048"
       v.linked_clone = false
@@ -50,7 +49,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "second" do |second|
     second.vm.box = "ubuntu/bionic64"
-    second.vm.network "private_network", ip: "10.3.5.30"
+    second.vm.network "private_network", ip: "192.168.15.30"
     second.vm.hostname = "second.mycloud.local"
 
     second.vm.provider "virtualbox" do |vb|
@@ -61,7 +60,6 @@ Vagrant.configure("2") do |config|
 
     second.vm.provider "vmware_desktop" do |v, override|
       override.vm.box = "bytesguy/ubuntu-server-20.04-arm64"
-      override.vm.network "private_network", ip: "192.168.15.30"
       v.gui = true
       v.memory = "2048"
       v.linked_clone = false
@@ -87,7 +85,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "third" do |third|
     third.vm.box = "ubuntu/bionic64"
-    third.vm.network "private_network", ip: "10.3.5.40"
+    third.vm.network "private_network", ip: "192.168.15.40"
     third.vm.hostname = "third.mycloud.local"
 
     third.vm.provider "virtualbox" do |vb|
@@ -98,7 +96,6 @@ Vagrant.configure("2") do |config|
 
     third.vm.provider "vmware_desktop" do |v, override|
       override.vm.box = "bytesguy/ubuntu-server-20.04-arm64"
-      override.vm.network "private_network", ip: "192.168.15.40"
       v.gui = true
       v.memory = "2048"
       v.linked_clone = false
@@ -124,7 +121,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "fourth" do |fourth|
     fourth.vm.box = "ubuntu/bionic64"
-    fourth.vm.network "private_network", ip: "10.3.5.50"
+    fourth.vm.network "private_network", ip: "192.168.15.50"
     fourth.vm.hostname = "fourth.mycloud.local"
 
     fourth.vm.provider "virtualbox" do |vb|
@@ -135,7 +132,6 @@ Vagrant.configure("2") do |config|
 
     fourth.vm.provider "vmware_desktop" do |v, override|
       override.vm.box = "bytesguy/ubuntu-server-20.04-arm64"
-      override.vm.network "private_network", ip: "192.168.15.50"
       v.gui = true
       v.memory = "2048"
       v.linked_clone = false
@@ -161,7 +157,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "fifth" do |fifth|
     fifth.vm.box = "ubuntu/bionic64"
-    fifth.vm.network "private_network", ip: "10.3.5.60"
+    fifth.vm.network "private_network", ip: "192.168.15.60"
     fifth.vm.hostname = "fifth.mycloud.local"
 
     fifth.vm.provider "virtualbox" do |vb|
@@ -172,7 +168,6 @@ Vagrant.configure("2") do |config|
 
     fifth.vm.provider "vmware_desktop" do |v, override|
       override.vm.box = "bytesguy/ubuntu-server-20.04-arm64"
-      override.vm.network "private_network", ip: "192.168.15.60"
       v.gui = true
       v.memory = "2048"
       v.linked_clone = false
@@ -198,7 +193,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "tools" do |tools|
     tools.vm.box = "ilker/ubuntu2004"
-    tools.vm.network "private_network", ip: "10.3.5.80"
+    tools.vm.network "private_network", ip: "192.168.15.80"
     tools.vm.hostname = "tools.mycloud.local"
 
     tools.vm.provider "virtualbox" do |vb|
@@ -210,7 +205,6 @@ Vagrant.configure("2") do |config|
 
     tools.vm.provider "vmware_desktop" do |v, override|
       override.vm.box = "bytesguy/ubuntu-server-20.04-arm64"
-      override.vm.network "private_network", ip: "192.168.15.80"
       v.gui = true
       v.memory = "1024"
       v.linked_clone = false
@@ -235,6 +229,6 @@ Vagrant.configure("2") do |config|
         --skip-start
     EOF
 
-    tools.vm.provision "shell", path: "cluster.sh"
+    #tools.vm.provision "shell", path: "cluster.sh"
   end
 end
