@@ -38,11 +38,11 @@ export VAULT_VERSION=1.12.2
 
 consul tls ca create
 consul tls cert create -server -dc dc1 -additional-dnsname=first.mycloud.local -additional-ipaddress=${SERVER_1_IP} -additional-dnsname=second.mycloud.local -additional-ipaddress=${SERVER_2_IP} -additional-dnsname=third.mycloud.local -additional-ipaddress=${SERVER_3_IP}
-consul tls cert create -client -dc dc1 -additional-dnsname=fouth.mycloud.local -additional-ipaddress=${SERVER_4_IP} -additional-dnsname=fifth.mycloud.local -additional-ipaddress=${SERVER_5_IP}
+consul tls cert create -client -dc dc1 -additional-dnsname=fouth.mycloud.local -additional-ipaddress=${AGENT_1_IP} -additional-dnsname=fifth.mycloud.local -additional-ipaddress=${AGENT_2_IP}
 
 consul tls ca create -domain=nomad
 consul tls cert create -server -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=first.mycloud.local -additional-ipaddress=${SERVER_1_IP} -additional-dnsname=second.mycloud.local -additional-ipaddress=${SERVER_2_IP} -additional-dnsname=third.mycloud.local -additional-ipaddress=${SERVER_3_IP}
-consul tls cert create -client  -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=fouth.mycloud.local -additional-ipaddress=${SERVER_4_IP} -additional-dnsname=fifth.mycloud.local -additional-ipaddress=${SERVER_5_IP}
+consul tls cert create -client  -domain=nomad -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=fouth.mycloud.local -additional-ipaddress=${AGENT_1_IP} -additional-dnsname=fifth.mycloud.local -additional-ipaddress=${AGENT_2_IP}
 
 consul tls ca create -domain=vault
 consul tls cert create -server -domain=vault -dc=dc1 -additional-ipaddress=127.0.0.1 -additional-dnsname=first.mycloud.local -additional-ipaddress=${SERVER_1_IP} -additional-dnsname=second.mycloud.local -additional-ipaddress=${SERVER_2_IP} -additional-dnsname=third.mycloud.local -additional-ipaddress=${SERVER_3_IP}
