@@ -3,18 +3,24 @@
 cp /vagrant/keys/insecure_private_key ~/.ssh/
 chmod 700 ~/.ssh/insecure_private_key
 
+export CONSUL_VERSION=1.10.2
+export NOMAD_VERSION=1.4.3
+export VAULT_VERSION=1.12.2
+
 hashi-up consul install \
   --local \
   --skip-enable \
   --skip-start \
-  --client-addr 0.0.0.0
+  --client-addr 0.0.0.0 \
+  --version ${CONSUL_VERSION}
 
 sleep 5
 
 hashi-up nomad install \
   --local \
   --skip-enable \
-  --skip-start
+  --skip-start \
+  --version ${NOMAD_VERSION}
 
 sleep 5
 
@@ -31,10 +37,6 @@ export SERVER_2_IP=192.168.15.30
 export SERVER_3_IP=192.168.15.40
 export AGENT_1_IP=192.168.15.50
 export AGENT_2_IP=192.168.15.60
-
-export CONSUL_VERSION=1.14.2
-export NOMAD_VERSION=1.4.3
-export VAULT_VERSION=1.12.2
 
 consul tls ca create
 consul tls cert create -server -dc dc1 -additional-dnsname=first.mycloud.local -additional-ipaddress=${SERVER_1_IP} -additional-dnsname=second.mycloud.local -additional-ipaddress=${SERVER_2_IP} -additional-dnsname=third.mycloud.local -additional-ipaddress=${SERVER_3_IP}
@@ -67,7 +69,7 @@ hashi-up consul install \
   --https-only=false \
   --bootstrap-expect 3 \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version ${CONSUL_VERSION}
+  --version ${CONSUL_VERSION}
 
 sleep 10
 
@@ -89,7 +91,7 @@ hashi-up consul install \
   --https-only=false \
   --bootstrap-expect 3 \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version ${CONSUL_VERSION}
+  --version ${CONSUL_VERSION}
 
 sleep 10
 
@@ -111,7 +113,7 @@ hashi-up consul install \
   --https-only=false \
   --bootstrap-expect 3 \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version ${CONSUL_VERSION}
+  --version ${CONSUL_VERSION}
 
 sleep 10
 
@@ -130,7 +132,7 @@ hashi-up consul install \
   --http-addr 127.0.0.1 \
   --https-only=false \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version ${CONSUL_VERSION}
+  --version ${CONSUL_VERSION}
 
 sleep 10
 
@@ -149,7 +151,7 @@ hashi-up consul install \
   --http-addr 127.0.0.1 \
   --https-only=false \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version ${CONSUL_VERSION}
+  --version ${CONSUL_VERSION}
 
 sleep 10
 
@@ -166,7 +168,7 @@ hashi-up nomad install \
   --key-file dc1-server-nomad-0-key.pem \
   --bootstrap-expect 3 \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version ${NOMAD_VERSION}
+  --version ${NOMAD_VERSION}
 
 sleep 10
 
@@ -183,7 +185,7 @@ hashi-up nomad install \
   --cert-file dc1-server-nomad-0.pem \
   --key-file dc1-server-nomad-0-key.pem \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version ${NOMAD_VERSION}
+  --version ${NOMAD_VERSION}
 
 sleep 10
 
@@ -200,7 +202,7 @@ hashi-up nomad install \
   --cert-file dc1-server-nomad-0.pem \
   --key-file dc1-server-nomad-0-key.pem \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version ${NOMAD_VERSION}
+  --version ${NOMAD_VERSION}
 
 sleep 10
 
@@ -214,7 +216,7 @@ hashi-up nomad install \
   --cert-file dc1-server-nomad-0.pem \
   --key-file dc1-server-nomad-0-key.pem \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version ${NOMAD_VERSION}
+  --version ${NOMAD_VERSION}
 
 sleep 10
 
@@ -228,7 +230,7 @@ hashi-up nomad install \
   --cert-file dc1-server-nomad-0.pem \
   --key-file dc1-server-nomad-0-key.pem \
   --retry-join $SERVER_1_IP --retry-join $SERVER_2_IP --retry-join $SERVER_3_IP \
-  -- version ${NOMAD_VERSION}
+  --version ${NOMAD_VERSION}
 
 sleep 10
 
@@ -240,7 +242,7 @@ hashi-up vault install \
     --key-file dc1-server-vault-0-key.pem \
     --storage consul \
     --api-addr http://$SERVER_1_IP:8200 \
-    -- version ${VAULT_VERSION}
+    --version ${VAULT_VERSION}
 
 sleep 10
 
@@ -252,4 +254,4 @@ hashi-up vault install \
     --key-file dc1-server-vault-0-key.pem \
     --storage consul \
     --api-addr http://$SERVER_2_IP:8200 \
-    -- version ${VAULT_VERSION}
+    --version ${VAULT_VERSION}
